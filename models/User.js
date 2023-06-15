@@ -27,6 +27,16 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'Please provide password'],
     minLength: 8,
   },
+  role: {
+    type: String,
+    trim: true,
+    enum: {
+      values: ['admin', 'agent'],
+      message: '{VALUE} is not supported',
+    },
+    default: 'agent',
+    //required: [true, 'role must be provided'],
+  },
 });
 
 UserSchema.pre('save', async function () {
@@ -35,9 +45,14 @@ UserSchema.pre('save', async function () {
 });
 
 UserSchema.methods.createJWT = function () {
-  return jwt.sign({userId: this._id}, 'jwtSecret', {
-    expiresIn: '30d',
+  return jwt.sign({userId: this._id, role: this.role}, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_LIFETIME,
   });
+};
+
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  const isMatch = await bcrypt.compare(candidatePassword, this.password);
+  return isMatch;
 };
 
 module.exports = mongoose.model('User', UserSchema);
