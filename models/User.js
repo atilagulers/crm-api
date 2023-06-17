@@ -7,13 +7,13 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide first name'],
     minLength: 3,
-    maxLength: 20,
+    maxLength: 30,
   },
   lastName: {
     type: String,
     required: [true, 'Please provide last name'],
     minLength: 3,
-    maxLength: 20,
+    maxLength: 30,
   },
   username: {
     type: String,
@@ -36,6 +36,11 @@ const UserSchema = new mongoose.Schema({
     },
     default: 'agent',
     //required: [true, 'role must be provided'],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+    select: false,
   },
 });
 

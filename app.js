@@ -16,6 +16,8 @@ const connectDB = require('./db/connect');
 // routers
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
+const customerRouter = require('./routes/customer');
+const hotelRouter = require('./routes/hotel');
 
 // auth
 const authenticateUser = require('./middleware/authentication');
@@ -27,6 +29,8 @@ const errorHandlerMiddleware = require('./middleware/errorHandler');
 // routes
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/user', authenticateUser, userRouter);
+app.use('/api/v1/customer', authenticateUser, customerRouter);
+app.use('/api/v1/hotel', authenticateUser, hotelRouter);
 
 app.get('/', (req, res) => {
   res.send('HOME');
