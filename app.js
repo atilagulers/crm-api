@@ -1,13 +1,16 @@
 require('dotenv').config();
 require('express-async-errors');
 const express = require('express');
+const cors = require('cors');
 
 const app = express();
 const helmet = require('helmet');
 
 app.use(helmet());
+app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+
 //app.use(express.static('public'));
 
 // connectDB
@@ -18,6 +21,8 @@ const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
 const customerRouter = require('./routes/customer');
 const hotelRouter = require('./routes/hotel');
+const gameRouter = require('./routes/game');
+const airlineRouter = require('./routes/airline');
 
 // auth
 const authenticateUser = require('./middleware/authentication');
@@ -31,6 +36,8 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/user', authenticateUser, userRouter);
 app.use('/api/v1/customer', authenticateUser, customerRouter);
 app.use('/api/v1/hotel', authenticateUser, hotelRouter);
+app.use('/api/v1/game', authenticateUser, gameRouter);
+app.use('/api/v1/airline', authenticateUser, airlineRouter);
 
 app.get('/', (req, res) => {
   res.send('HOME');

@@ -53,7 +53,7 @@ const updateUser = async (req, res, next) => {
   if (role !== 'admin')
     throw new UnauthenticatedError('Authentication invalid');
 
-  const user = await User.findByIdAndUpdate({_id: userId}, req.body, {
+  const user = await User.findByIdAndUpdate(userId, req.body, {
     new: true,
     runValidators: true,
   });

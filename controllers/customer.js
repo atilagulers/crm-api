@@ -26,14 +26,10 @@ const createCustomer = async (req, res) => {
 
 const updateCustomer = async (req, res) => {
   const {id: customerId} = req.params;
-  const customer = await Customer.findByIdAndUpdate(
-    {_id: customerId},
-    req.body,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  const customer = await Customer.findByIdAndUpdate(customerId, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
   if (!customer) throw new NotFoundError(`No customer with id ${customerId}`);
 
