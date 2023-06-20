@@ -4,13 +4,27 @@ const {StatusCodes} = require('http-status-codes');
 
 const getAllUsers = async (req, res) => {
   const {role} = req.user;
+  const {page, limit} = req.query;
 
   if (role !== 'admin')
     throw new UnauthenticatedError('Authentication invalid');
 
-  const users = await User.find();
+  const pageNumber = parseInt(page) || 1;
+  const limitNumber = parseInt(limit) || 10;
+  const skip = (pageNumber - 1) * limitNumber;
 
-  res.status(StatusCodes.OK).json({count: users.length, users});
+  const usersQuery = User.aggregate([{$skip: skip}, {$limit: limitNumber}]);
+
+  const countQuery = User.countDocuments();
+
+  const [users, totalCount] = await Promise.all([usersQuery, countQuery]);
+
+  res.status(StatusCodes.OK).json({
+    totalCount,
+    currentPage: pageNumber,
+    totalPages: Math.ceil(totalCount / limitNumber),
+    users,
+  });
 };
 
 const getUser = async (req, res) => {

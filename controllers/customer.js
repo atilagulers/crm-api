@@ -3,9 +3,32 @@ const {StatusCodes} = require('http-status-codes');
 const {NotFoundError} = require('../errors');
 
 const getAllCustomers = async (req, res) => {
-  const customers = await Customer.find();
+  const {page, limit} = req.query;
 
-  res.status(StatusCodes.OK).json({count: customers.length, customers});
+  const pageNumber = parseInt(page) || 1;
+  const limitNumber = parseInt(limit) | 10;
+  const skip = (pageNumber - 1) * limitNumber;
+
+  const customersQuery = Customer.aggregate([
+    {$skip: skip},
+    {$limit: limitNumber},
+  ]);
+
+  const countQuery = Customer.countDocuments();
+
+  const [customers, totalCount] = await Promise.all([
+    customersQuery,
+    countQuery,
+  ]);
+
+  res.status(StatusCodes.OK).json({
+    totalCount,
+    currentPage: pageNumber,
+    totalPages: Math.ceil(totalCount / limitNumber),
+    customers,
+  });
+
+  //res.status(StatusCodes.OK).json({count: customers.length, customers});
 };
 
 const getCustomer = async (req, res) => {

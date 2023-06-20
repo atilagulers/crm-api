@@ -3,9 +3,27 @@ const {StatusCodes} = require('http-status-codes');
 const {NotFoundError} = require('../errors');
 
 const getAllAirlines = async (req, res) => {
-  const airlines = await Airline.find();
+  const {page, limit} = req.query;
 
-  res.status(StatusCodes.OK).json({count: airlines.length, airlines});
+  const pageNumber = parseInt(page) || 1;
+  const limitNumber = parseInt(limit) || 10;
+  const skip = (pageNumber - 1) * limitNumber;
+
+  const airlinesQuery = Airline.aggregate([
+    {$skip: skip},
+    {$limit: limitNumber},
+  ]);
+
+  const countQuery = Airline.countDocuments();
+
+  const [airlines, totalCount] = await Promise.all([airlinesQuery, countQuery]);
+
+  res.status(StatusCodes.OK).json({
+    totalCount,
+    currentPage: pageNumber,
+    totalPages: Math.ceil(totalCount / limitNumber),
+    airlines,
+  });
 };
 
 const getAirline = async (req, res) => {
