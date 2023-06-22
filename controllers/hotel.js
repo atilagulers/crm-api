@@ -3,9 +3,24 @@ const {StatusCodes} = require('http-status-codes');
 const {NotFoundError} = require('../errors');
 
 const getAllHotels = async (req, res) => {
-  const hotels = await Hotel.find();
+  const {page, limit} = req.params;
 
-  res.status(StatusCodes.OK).json({count: hotels.length, hotels});
+  const pageNumber = parseInt(page) || 1;
+  const limitNumber = parseInt(limit) || 10;
+  const skip = (pageNumber - 1) * limitNumber;
+
+  const hotelsQuery = Hotel.aggregate([{$skip: skip}, {$limit: limitNumber}]);
+
+  const countQuery = Hotel.countDocuments();
+
+  const [hotels, totalCount] = await Promise.all([hotelsQuery, countQuery]);
+
+  res.status(StatusCodes.OK).json({
+    totalCount,
+    currentPage: pageNumber,
+    totalPages: Math.ceil(totalCount / limitNumber),
+    hotels,
+  });
 };
 
 const getHotel = async (req, res) => {

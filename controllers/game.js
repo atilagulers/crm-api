@@ -1,11 +1,27 @@
 const Game = require('../models/Game');
 const {StatusCodes} = require('http-status-codes');
 const {NotFoundError} = require('../errors');
+const User = require('../models/User');
 
 const getAllGames = async (req, res) => {
-  const games = await Game.find();
+  const {page, limit} = req.params;
 
-  res.status(StatusCodes.OK).json({count: games.length, games});
+  const pageNumber = parseInt(page) || 1;
+  const limitNumber = parseInt(limit) || 10;
+  const skip = (pageNumber - 1) * limitNumber;
+
+  const gamesQuery = Game.aggregate([{$skip: skip}, {$limit: limitNumber}]);
+
+  const countQuery = Game.countDocuments();
+
+  const [games, totalCount] = await Promise.all([gamesQuery, countQuery]);
+
+  res.status(StatusCodes.OK).json({
+    totalCount,
+    currentPage: pageNumber,
+    totalPages: Math.ceil(totalCount / limitNumber),
+    games,
+  });
 };
 
 const getGame = async (req, res) => {
