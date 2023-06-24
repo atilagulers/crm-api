@@ -12,6 +12,14 @@ const getAllCustomers = async (req, res) => {
   const customersQuery = Customer.aggregate([
     {$skip: skip},
     {$limit: limitNumber},
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'user',
+        foreignField: '_id',
+        as: 'user',
+      },
+    },
   ]);
 
   const countQuery = Customer.countDocuments();
@@ -34,7 +42,10 @@ const getAllCustomers = async (req, res) => {
 const getCustomer = async (req, res) => {
   const {id: customerId} = req.params;
 
-  const customer = await Customer.findById(customerId);
+  const customer = await Customer.findById(customerId).populate(
+    'user',
+    '-password'
+  );
 
   if (!customer) throw new NotFoundError(`No customer with id ${customerId}`);
 

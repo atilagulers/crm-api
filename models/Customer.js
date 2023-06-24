@@ -65,6 +65,10 @@ const CustomerSchema = new mongoose.Schema({
     default: 'agent',
     required: [true, 'gender must be provided'],
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   isActive: {
     type: Boolean,
     default: true,

@@ -10,10 +10,14 @@ const HotelSchema = new mongoose.Schema({
   responsible: {
     type: String,
     required: [true, 'Please provide responsible person'],
+    minLength: 3,
+    maxLength: 30,
   },
   phone: {
     type: String,
-    required: [true, ''],
+    required: [true, 'Please provide phone number'],
+    minLength: 10,
+    maxLength: 10,
   },
   email: {
     type: String,
