@@ -4,7 +4,7 @@ const {StatusCodes} = require('http-status-codes');
 
 const getAllUsers = async (req, res) => {
   const {role} = req.user;
-  const {page, limit} = req.query;
+  const {page, limit, sortBy, sortOrder} = req.query;
 
   if (role !== 'admin')
     throw new UnauthenticatedError('Authentication invalid');
@@ -12,8 +12,23 @@ const getAllUsers = async (req, res) => {
   const pageNumber = parseInt(page) || 1;
   const limitNumber = parseInt(limit) || 10;
   const skip = (pageNumber - 1) * limitNumber;
+  const sortField = sortBy || 'firstName';
+  const sortDirection = parseInt(sortOrder) || 1;
 
-  const usersQuery = User.aggregate([{$skip: skip}, {$limit: limitNumber}]);
+  const sortQuery = {[sortField]: sortDirection};
+
+  const usersQuery = User.aggregate([
+    {
+      $project: {
+        firstName: {$toLower: '$firstName'},
+        lastName: {$toLower: '$lastName'},
+        username: {$toLower: '$username'},
+      },
+    },
+    {$sort: {sortField: sortDirection}},
+    {$skip: skip},
+    {$limit: limitNumber},
+  ]);
 
   const countQuery = User.countDocuments();
 

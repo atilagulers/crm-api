@@ -20,6 +20,11 @@ const getAllCustomers = async (req, res) => {
         as: 'user',
       },
     },
+    {
+      $project: {
+        'user.password': 0,
+      },
+    },
   ]);
 
   const countQuery = Customer.countDocuments();
