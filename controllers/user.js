@@ -17,18 +17,18 @@ const getAllUsers = async (req, res) => {
 
   const sortQuery = {[sortField]: sortDirection};
 
+  const collationOptions = {
+    locale: 'tr',
+    caseLevel: false,
+    caseFirst: 'off',
+    strength: 2,
+  };
+
   const usersQuery = User.aggregate([
-    {
-      $project: {
-        firstName: {$toLower: '$firstName'},
-        lastName: {$toLower: '$lastName'},
-        username: {$toLower: '$username'},
-      },
-    },
-    {$sort: {sortField: sortDirection}},
+    {$sort: sortQuery},
     {$skip: skip},
     {$limit: limitNumber},
-  ]);
+  ]).collation(collationOptions);
 
   const countQuery = User.countDocuments();
 
