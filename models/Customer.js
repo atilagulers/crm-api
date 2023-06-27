@@ -4,7 +4,7 @@ const CustomerSchema = new mongoose.Schema({
   tc: {
     type: String,
     required: [true, 'Please provide TC'],
-    minLength: 11,
+    minLength: 10,
     maxLength: 11,
   },
   firstName: {

@@ -4,13 +4,28 @@ const {NotFoundError} = require('../errors');
 const User = require('../models/User');
 
 const getAllGames = async (req, res) => {
-  const {page, limit} = req.params;
+  const {page, limit, sortBy, sortOrder} = req.query;
 
   const pageNumber = parseInt(page) || 1;
   const limitNumber = parseInt(limit) || 10;
   const skip = (pageNumber - 1) * limitNumber;
+  const sortField = sortBy || 'name';
+  const sortDirection = parseInt(sortOrder) || 1;
 
-  const gamesQuery = Game.aggregate([{$skip: skip}, {$limit: limitNumber}]);
+  const sortQuery = {[sortField]: sortDirection};
+
+  const collationOptions = {
+    locale: 'tr',
+    caseLevel: false,
+    caseFirst: 'off',
+    strength: 2,
+  };
+
+  const gamesQuery = Game.aggregate([
+    {$sort: sortQuery},
+    {$skip: skip},
+    {$limit: limitNumber},
+  ]).collation(collationOptions);
 
   const countQuery = Game.countDocuments();
 
