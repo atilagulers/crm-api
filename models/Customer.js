@@ -3,9 +3,6 @@ const mongoose = require('mongoose');
 const CustomerSchema = new mongoose.Schema({
   tc: {
     type: String,
-    required: [true, 'Please provide TC'],
-    minLength: 10,
-    maxLength: 11,
   },
   firstName: {
     type: String,
@@ -31,14 +28,6 @@ const CustomerSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'Please provide email'],
-    match: [
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      'Please provide a valid email',
-    ],
-    unique: true,
-    minLength: 3,
-    maxLength: 30,
   },
   birthday: {
     type: Date,
@@ -59,11 +48,10 @@ const CustomerSchema = new mongoose.Schema({
     type: String,
     trim: true,
     enum: {
-      values: ['erkek', 'kadın', 'bilinmiyor'],
+      values: ['erkek', 'kadin'],
       message: '{VALUE} is not supported',
     },
-    default: 'agent',
-    required: [true, 'gender must be provided'],
+    default: 'erkek',
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

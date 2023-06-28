@@ -6,8 +6,8 @@ const getAllUsers = async (req, res) => {
   const {role} = req.user;
   const {page, limit, sortBy, sortOrder} = req.query;
 
-  if (role !== 'admin')
-    throw new UnauthenticatedError('Authentication invalid');
+  //if (role !== 'admin')
+  //  throw new UnauthenticatedError('Authentication invalid');
 
   const pageNumber = parseInt(page) || 1;
   const limitNumber = parseInt(limit) || 10;
