@@ -6,7 +6,7 @@ const getAllCustomers = async (req, res) => {
   const {page, limit} = req.query;
 
   const pageNumber = parseInt(page) || 1;
-  const limitNumber = parseInt(limit) | 10;
+  const limitNumber = parseInt(limit) || 10;
   const skip = (pageNumber - 1) * limitNumber;
 
   const customersQuery = Customer.aggregate([

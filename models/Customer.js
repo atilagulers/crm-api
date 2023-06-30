@@ -57,6 +57,10 @@ const CustomerSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+  customerGroup: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'CustomerGroup',
+  },
   isActive: {
     type: Boolean,
     default: true,
