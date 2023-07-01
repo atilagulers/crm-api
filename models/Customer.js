@@ -61,6 +61,14 @@ const CustomerSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'CustomerGroup',
   },
+  callLogs: {
+    type: [String],
+    default: [],
+  },
+  willBeCalled: {
+    type: Boolean,
+    default: false,
+  },
   isActive: {
     type: Boolean,
     default: true,

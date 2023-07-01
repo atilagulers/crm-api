@@ -3,13 +3,22 @@ const {StatusCodes} = require('http-status-codes');
 const {NotFoundError} = require('../errors');
 
 const getAllCustomers = async (req, res) => {
-  const {page, limit} = req.query;
+  const {page, limit, willBeCalled} = req.query;
 
   const pageNumber = parseInt(page) || 1;
   const limitNumber = parseInt(limit) || 10;
   const skip = (pageNumber - 1) * limitNumber;
 
+  const filter = {};
+  if (willBeCalled === 'true') {
+    filter.willBeCalled = true;
+  } else if (willBeCalled === 'false') {
+    filter.willBeCalled = false;
+  }
+  console.log(filter);
+
   const customersQuery = Customer.aggregate([
+    {$match: filter},
     {$skip: skip},
     {$limit: limitNumber},
     {
