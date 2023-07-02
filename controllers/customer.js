@@ -3,7 +3,7 @@ const {StatusCodes} = require('http-status-codes');
 const {NotFoundError} = require('../errors');
 
 const getAllCustomers = async (req, res) => {
-  const {page, limit, willBeCalled} = req.query;
+  const {page, limit, willBeCalled, callDate, sortBy, sortOrder} = req.query;
 
   const pageNumber = parseInt(page) || 1;
   const limitNumber = parseInt(limit) || 10;
@@ -15,10 +15,29 @@ const getAllCustomers = async (req, res) => {
   } else if (willBeCalled === 'false') {
     filter.willBeCalled = false;
   }
-  console.log(filter);
+
+  if (callDate && willBeCalled) {
+    if (callDate === 'future') {
+      const today = new Date();
+      filter.callDate = {$gte: today};
+    } else if (callDate === 'today') {
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const todayEnd = new Date();
+      todayEnd.setHours(23, 59, 59, 999);
+      filter.callDate = {$gte: todayStart, $lte: todayEnd};
+    }
+  }
+
+  const sort = {};
+  if (sortBy && sortOrder) {
+    sort[sortBy] = parseInt(sortOrder);
+  }
 
   const customersQuery = Customer.aggregate([
     {$match: filter},
+
+    {$sort: sort},
     {$skip: skip},
     {$limit: limitNumber},
     {
@@ -27,6 +46,14 @@ const getAllCustomers = async (req, res) => {
         localField: 'user',
         foreignField: '_id',
         as: 'user',
+      },
+    },
+    {
+      $lookup: {
+        from: 'customergroups',
+        localField: 'customerGroup',
+        foreignField: '_id',
+        as: 'customerGroup',
       },
     },
     {
@@ -49,8 +76,6 @@ const getAllCustomers = async (req, res) => {
     totalPages: Math.ceil(totalCount / limitNumber),
     customers,
   });
-
-  //res.status(StatusCodes.OK).json({count: customers.length, customers});
 };
 
 const getCustomer = async (req, res) => {

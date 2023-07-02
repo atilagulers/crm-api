@@ -69,6 +69,10 @@ const CustomerSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  callDate: {
+    type: Date,
+    default: null,
+  },
   isActive: {
     type: Boolean,
     default: true,
