@@ -33,7 +33,6 @@ const getAllCustomers = async (req, res) => {
   if (sortBy && sortOrder) {
     sort[sortBy] = parseInt(sortOrder);
   }
-
   const customersQuery = Customer.aggregate([
     {$match: filter},
 

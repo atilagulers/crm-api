@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const CustomerSchema = new mongoose.Schema({
+const CallSchema = new mongoose.Schema({
   customer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Customer',
@@ -11,15 +11,15 @@ const CustomerSchema = new mongoose.Schema({
     ref: 'User',
   },
 
-  callLog: {
+  log: {
     type: String,
   },
 
   createdAt: {
     type: Date,
     default: Date.now(),
-    select: false,
+    //select: false,
   },
 });
 
-module.exports = mongoose.model('Customer', CustomerSchema);
+module.exports = mongoose.model('Call', CallSchema);
