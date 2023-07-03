@@ -61,11 +61,17 @@ const CustomerSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'CustomerGroup',
   },
-  callLogs: {
-    type: [String],
-    default: [],
-  },
+  calls: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Call',
+    },
+  ],
   willBeCalled: {
+    type: Boolean,
+    default: false,
+  },
+  isComing: {
     type: Boolean,
     default: false,
   },

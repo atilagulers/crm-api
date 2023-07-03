@@ -55,6 +55,7 @@ const getAllCustomers = async (req, res) => {
         as: 'customerGroup',
       },
     },
+
     {
       $project: {
         'user.password': 0,

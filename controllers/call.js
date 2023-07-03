@@ -3,7 +3,7 @@ const {StatusCodes} = require('http-status-codes');
 const {NotFoundError} = require('../errors');
 
 const getAllCalls = async (req, res) => {
-  const {page, limit, willBeCalled, callDate, sortBy, sortOrder} = req.query;
+  const {page, limit, sortBy, sortOrder, customerId} = req.query;
 
   const pageNumber = parseInt(page) || 1;
   const limitNumber = parseInt(limit) || 10;
@@ -14,7 +14,13 @@ const getAllCalls = async (req, res) => {
     sort[sortBy] = parseInt(sortOrder);
   }
 
+  const filter = {};
+  if (customerId) {
+    filter.customer = customerId;
+  }
+
   const callsQuery = Call.aggregate([
+    {$match: filter},
     {$sort: sort},
     {$skip: skip},
     {$limit: limitNumber},
@@ -56,7 +62,9 @@ const getAllCalls = async (req, res) => {
 const getCall = async (req, res) => {
   const {id: callId} = req.params;
 
-  const call = await Call.findById(callId).populate('user', '-password');
+  const call = await Call.findById(callId)
+    .populate('user', '-password')
+    .populate('customer');
 
   if (!call) throw new NotFoundError(`No call with id ${customerId}`);
 
