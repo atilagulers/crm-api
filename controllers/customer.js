@@ -3,7 +3,7 @@ const {StatusCodes} = require('http-status-codes');
 const {NotFoundError} = require('../errors');
 
 const getAllCustomers = async (req, res) => {
-  const {page, limit, willBeCalled, callDate, sortBy, sortOrder} = req.query;
+  const {page, limit, willBeCalled, time, sortBy, sortOrder} = req.query;
 
   const pageNumber = parseInt(page) || 1;
   const limitNumber = parseInt(limit) || 10;
@@ -16,16 +16,17 @@ const getAllCustomers = async (req, res) => {
     filter.willBeCalled = false;
   }
 
-  if (callDate && willBeCalled) {
-    if (callDate === 'future') {
-      const today = new Date();
-      filter.callDate = {$gte: today};
-    } else if (callDate === 'today') {
+  if (time && willBeCalled) {
+    if (time === 'future') {
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
       const todayEnd = new Date();
       todayEnd.setHours(23, 59, 59, 999);
       filter.callDate = {$gte: todayStart, $lte: todayEnd};
+    } else if (time === 'today') {
+      const todayEnd = new Date();
+      todayEnd.setHours(23, 59, 59, 999);
+      filter.callDate = {$gt: todayEnd};
     }
   }
 
@@ -69,7 +70,7 @@ const getAllCustomers = async (req, res) => {
     customersQuery,
     countQuery,
   ]);
-
+  console.log(customers);
   res.status(StatusCodes.OK).json({
     totalCount,
     currentPage: pageNumber,

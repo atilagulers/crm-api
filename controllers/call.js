@@ -16,7 +16,7 @@ const getAllCalls = async (req, res) => {
 
   const filter = {};
   if (customerId) {
-    filter.customer = customerId;
+    filter.customer = {_id: customerId};
   }
 
   const callsQuery = Call.aggregate([

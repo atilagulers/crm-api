@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const CustomerSchema = new mongoose.Schema({
   tc: {
     type: String,
+    unique: true,
   },
   firstName: {
     type: String,
@@ -19,6 +20,7 @@ const CustomerSchema = new mongoose.Schema({
   phone1: {
     type: String,
     required: [true, 'Please provide phone 1'],
+    unique: true,
   },
   phone2: {
     type: String,
@@ -71,11 +73,19 @@ const CustomerSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  isComing: {
+  callDate: {
+    type: Date,
+    default: null,
+  },
+  waitingReservation: {
     type: Boolean,
     default: false,
   },
-  callDate: {
+  isReserved: {
+    type: Boolean,
+    default: false,
+  },
+  reservationDate: {
     type: Date,
     default: null,
   },
