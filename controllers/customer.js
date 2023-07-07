@@ -3,7 +3,15 @@ const {StatusCodes} = require('http-status-codes');
 const {NotFoundError} = require('../errors');
 
 const getAllCustomers = async (req, res) => {
-  const {page, limit, willBeCalled, time, sortBy, sortOrder} = req.query;
+  const {
+    page,
+    limit,
+    willBeCalled,
+    time,
+    sortBy,
+    sortOrder,
+    waitingReservation,
+  } = req.query;
 
   const pageNumber = parseInt(page) || 1;
   const limitNumber = parseInt(limit) || 10;
@@ -14,6 +22,12 @@ const getAllCustomers = async (req, res) => {
     filter.willBeCalled = true;
   } else if (willBeCalled === 'false') {
     filter.willBeCalled = false;
+  }
+
+  if (waitingReservation === 'true') {
+    filter.waitingReservation = true;
+  } else if (waitingReservation === 'false') {
+    filter.waitingReservation = false;
   }
 
   if (time && willBeCalled) {
