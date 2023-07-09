@@ -11,6 +11,7 @@ const getAllCustomers = async (req, res) => {
     sortBy,
     sortOrder,
     waitingReservation,
+    phone,
   } = req.query;
 
   const pageNumber = parseInt(page) || 1;
@@ -44,13 +45,17 @@ const getAllCustomers = async (req, res) => {
     }
   }
 
+  if (phone) {
+    filter.$or = [{phone1: phone}, {phone2: phone}, {phone3: phone}];
+  }
+
   const sort = {};
   if (sortBy && sortOrder) {
     sort[sortBy] = parseInt(sortOrder);
   }
+
   const customersQuery = Customer.aggregate([
     {$match: filter},
-
     {$sort: sort},
     {$skip: skip},
     {$limit: limitNumber},
@@ -70,7 +75,6 @@ const getAllCustomers = async (req, res) => {
         as: 'customerGroup',
       },
     },
-
     {
       $project: {
         'user.password': 0,
@@ -84,7 +88,7 @@ const getAllCustomers = async (req, res) => {
     customersQuery,
     countQuery,
   ]);
-  console.log(customers);
+
   res.status(StatusCodes.OK).json({
     totalCount,
     currentPage: pageNumber,
