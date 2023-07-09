@@ -25,6 +25,7 @@ const gameRouter = require('./routes/game');
 const airlineRouter = require('./routes/airline');
 const customerGroupRouter = require('./routes/customerGroup');
 const callRouter = require('./routes/call');
+const reservationRouter = require('./routes/reservation');
 
 // auth
 const authenticateUser = require('./middleware/authentication');
@@ -42,6 +43,7 @@ app.use('/api/v1/game', authenticateUser, gameRouter);
 app.use('/api/v1/airline', authenticateUser, airlineRouter);
 app.use('/api/v1/customer-group', authenticateUser, customerGroupRouter);
 app.use('/api/v1/call', authenticateUser, callRouter);
+app.use('/api/v1/reservation', authenticateUser, reservationRouter);
 
 app.get('/', (req, res) => {
   res.send('CRM API');
