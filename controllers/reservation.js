@@ -3,7 +3,7 @@ const {StatusCodes} = require('http-status-codes');
 const {NotFoundError} = require('../errors');
 
 const getAllReservations = async (req, res) => {
-  const {page, limit, sortBy, sortOrder, customerId} = req.query;
+  const {page, limit, sortBy, sortOrder, customerId, time} = req.query;
 
   const pageNumber = parseInt(page) || 1;
   const limitNumber = parseInt(limit) || 10;
@@ -17,6 +17,21 @@ const getAllReservations = async (req, res) => {
   const filter = {};
   if (customerId) {
     filter.customer = {_id: customerId};
+  }
+
+  if (time) {
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+
+    if (time === 'future') {
+      filter.departureDate = {$gte: todayStart, $lte: todayEnd};
+    } else if (time === 'today') {
+      filter.departureDate = {$gt: todayEnd};
+    } else if (time === 'past') {
+      filter.departureDate = {$lt: todayStart};
+    }
   }
 
   const reservationsQuery = Reservation.aggregate([
@@ -38,6 +53,30 @@ const getAllReservations = async (req, res) => {
         localField: 'customer',
         foreignField: '_id',
         as: 'customer',
+      },
+    },
+    {
+      $lookup: {
+        from: 'airlines',
+        localField: 'departureAirline',
+        foreignField: '_id',
+        as: 'departureAirline',
+      },
+    },
+    {
+      $lookup: {
+        from: 'airlines',
+        localField: 'returnAirline',
+        foreignField: '_id',
+        as: 'returnAirline',
+      },
+    },
+    {
+      $lookup: {
+        from: 'hotels',
+        localField: 'hotel',
+        foreignField: '_id',
+        as: 'hotel',
       },
     },
     {
