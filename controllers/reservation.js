@@ -26,9 +26,9 @@ const getAllReservations = async (req, res) => {
     todayEnd.setHours(23, 59, 59, 999);
 
     if (time === 'future') {
-      filter.departureDate = {$gte: todayStart, $lte: todayEnd};
-    } else if (time === 'today') {
       filter.departureDate = {$gt: todayEnd};
+    } else if (time === 'today') {
+      filter.departureDate = {$gte: todayStart, $lte: todayEnd};
     } else if (time === 'past') {
       filter.departureDate = {$lt: todayStart};
     }
