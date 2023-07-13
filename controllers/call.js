@@ -1,6 +1,7 @@
 const Call = require('../models/Call');
 const {StatusCodes} = require('http-status-codes');
 const {NotFoundError} = require('../errors');
+const mongoose = require('mongoose');
 
 const getAllCalls = async (req, res) => {
   const {page, limit, sortBy, sortOrder, customerId} = req.query;
@@ -16,7 +17,7 @@ const getAllCalls = async (req, res) => {
 
   const filter = {};
   if (customerId) {
-    filter.customer = {_id: customerId};
+    filter.customer = new mongoose.Types.ObjectId(customerId);
   }
 
   const callsQuery = Call.aggregate([
