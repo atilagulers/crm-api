@@ -32,26 +32,26 @@ const ReservationSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide departure PNR'],
   },
-  returnAirline: {
+  arrivalAirline: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Airline',
-    required: [true, 'Please provide return airline'],
+    required: [true, 'Please provide arrival airline'],
   },
-  returnDate: {
+  arrivalDate: {
     type: Date,
-    required: [true, 'Please provide return date'],
+    required: [true, 'Please provide arrival date'],
   },
-  returnTime: {
+  arrivalTime: {
     type: String,
-    required: [true, 'Please provide return time'],
+    required: [true, 'Please provide arrival time'],
   },
-  returnDestination: {
+  arrivalDestination: {
     type: String,
-    required: [true, 'Please provide return destination'],
+    required: [true, 'Please provide arrival destination'],
   },
-  returnPNR: {
+  arrivalPNR: {
     type: String,
-    required: [true, 'Please provide return PNR'],
+    required: [true, 'Please provide arrival PNR'],
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

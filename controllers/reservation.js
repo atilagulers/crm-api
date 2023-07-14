@@ -26,11 +26,11 @@ const getAllReservations = async (req, res) => {
     todayEnd.setHours(23, 59, 59, 999);
 
     if (time === 'future') {
-      filter.departureDate = {$gt: todayEnd};
+      filter.arrivalDate = {$gt: todayEnd};
     } else if (time === 'today') {
-      filter.departureDate = {$gte: todayStart, $lte: todayEnd};
+      filter.arrivalDate = {$gte: todayStart, $lte: todayEnd};
     } else if (time === 'past') {
-      filter.departureDate = {$lt: todayStart};
+      filter.arrivalDate = {$lt: todayStart};
     }
   }
 
@@ -58,9 +58,9 @@ const getAllReservations = async (req, res) => {
     {
       $lookup: {
         from: 'airlines',
-        localField: 'departureAirline',
+        localField: 'arrivalAirline',
         foreignField: '_id',
-        as: 'departureAirline',
+        as: 'arrivalAirline',
       },
     },
     {
