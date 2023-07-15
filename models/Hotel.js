@@ -6,6 +6,7 @@ const HotelSchema = new mongoose.Schema({
     required: [true, 'Please provide hotel name'],
     minLength: 3,
     maxLength: 30,
+    unique: true,
   },
   responsible: {
     type: String,

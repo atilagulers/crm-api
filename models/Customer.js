@@ -26,9 +26,11 @@ const CustomerSchema = new mongoose.Schema(
     },
     phone2: {
       type: String,
+      unique: true,
     },
     phone3: {
       type: String,
+      unique: true,
     },
     email: {
       type: String,

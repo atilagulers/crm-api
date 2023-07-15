@@ -6,6 +6,7 @@ const GameSchema = new mongoose.Schema({
     required: [true, 'Please provide game name'],
     minLength: 3,
     maxLength: 30,
+    unique: true,
   },
   createdAt: {
     type: Date,
