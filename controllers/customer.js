@@ -76,6 +76,11 @@ const getAllCustomers = async (req, res) => {
       },
     },
     {
+      $addFields: {
+        fullName: {$concat: ['$firstName', ' ', '$lastName']},
+      },
+    },
+    {
       $project: {
         'user.password': 0,
       },

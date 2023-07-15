@@ -79,6 +79,7 @@ const getAllReservations = async (req, res) => {
         as: 'hotel',
       },
     },
+
     {
       $project: {
         'user.password': 0,

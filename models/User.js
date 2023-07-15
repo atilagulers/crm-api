@@ -15,6 +15,7 @@ const UserSchema = new mongoose.Schema({
     minLength: 3,
     maxLength: 20,
   },
+
   username: {
     type: String,
     required: [true, 'Please provide username'],
@@ -42,6 +43,10 @@ const UserSchema = new mongoose.Schema({
     default: Date.now(),
     select: false,
   },
+});
+
+UserSchema.virtual('fullName').get(function () {
+  return `${this.firstName} ${this.lastName}`;
 });
 
 UserSchema.pre('save', async function () {

@@ -28,6 +28,11 @@ const getAllUsers = async (req, res) => {
     {$sort: sortQuery},
     {$skip: skip},
     {$limit: limitNumber},
+    {
+      $addFields: {
+        fullName: {$concat: ['$firstName', ' ', '$lastName']},
+      },
+    },
   ]).collation(collationOptions);
 
   const countQuery = User.countDocuments();
