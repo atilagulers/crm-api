@@ -32,13 +32,13 @@ const getAllCustomers = async (req, res) => {
   }
 
   if (time && willBeCalled) {
-    if (time === 'future') {
+    if (time === 'today') {
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
       const todayEnd = new Date();
       todayEnd.setHours(23, 59, 59, 999);
       filter.callDate = {$gte: todayStart, $lte: todayEnd};
-    } else if (time === 'today') {
+    } else if (time === 'future') {
       const todayEnd = new Date();
       todayEnd.setHours(23, 59, 59, 999);
       filter.callDate = {$gt: todayEnd};
