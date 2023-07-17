@@ -107,7 +107,10 @@ const getReservation = async (req, res) => {
 
   const reservation = await Reservation.findById(reservationId)
     .populate('user', '-password')
-    .populate('customer');
+    .populate('customer')
+    .populate('hotel')
+    .populate('departureAirline')
+    .populate('arrivalAirline');
 
   if (!reservation)
     throw new NotFoundError(`No reservation with id ${customerId}`);
@@ -135,7 +138,7 @@ const updateReservation = async (req, res) => {
   if (!reservation)
     throw new NotFoundError(`No reservation with id ${reservationId}`);
 
-  res.status(StatusCodes.OK).json(customer);
+  res.status(StatusCodes.OK).json(reservation);
 };
 
 module.exports = {
