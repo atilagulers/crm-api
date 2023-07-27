@@ -4,7 +4,7 @@ const {NotFoundError} = require('../errors');
 const mongoose = require('mongoose');
 
 const getAllCalls = async (req, res) => {
-  const {page, limit, sortBy, sortOrder, customerId} = req.query;
+  const {page, limit, sortBy, sortOrder, customerId, userId} = req.query;
 
   const pageNumber = parseInt(page) || 1;
   const limitNumber = parseInt(limit) || 10;
@@ -16,6 +16,7 @@ const getAllCalls = async (req, res) => {
   }
 
   const filter = {};
+
   if (customerId) {
     filter.customer = new mongoose.Types.ObjectId(customerId);
   }

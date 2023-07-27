@@ -1,9 +1,10 @@
 const Reservation = require('../models/Reservation');
+const mongoose = require('mongoose');
 const {StatusCodes} = require('http-status-codes');
 const {NotFoundError} = require('../errors');
 
 const getAllReservations = async (req, res) => {
-  const {page, limit, sortBy, sortOrder, customerId, time} = req.query;
+  const {page, limit, sortBy, sortOrder, customerId, time, userId} = req.query;
 
   const pageNumber = parseInt(page) || 1;
   const limitNumber = parseInt(limit) || 10;
@@ -17,6 +18,10 @@ const getAllReservations = async (req, res) => {
   const filter = {};
   if (customerId) {
     filter.customer = {_id: customerId};
+  }
+
+  if (userId && req.user.role !== 'admin') {
+    filter.user = new mongoose.Types.ObjectId(userId);
   }
 
   if (time) {

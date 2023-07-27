@@ -1,4 +1,5 @@
 const Customer = require('../models/Customer');
+const mongoose = require('mongoose');
 const {StatusCodes} = require('http-status-codes');
 const {NotFoundError} = require('../errors');
 
@@ -12,6 +13,7 @@ const getAllCustomers = async (req, res) => {
     sortOrder,
     waitingReservation,
     phone,
+    userId,
   } = req.query;
 
   const pageNumber = parseInt(page) || 1;
@@ -19,6 +21,11 @@ const getAllCustomers = async (req, res) => {
   const skip = (pageNumber - 1) * limitNumber;
 
   const filter = {};
+
+  if (userId && req.user.role !== 'admin') {
+    filter.user = new mongoose.Types.ObjectId(userId);
+  }
+
   if (willBeCalled === 'true') {
     filter.willBeCalled = true;
   } else if (willBeCalled === 'false') {
